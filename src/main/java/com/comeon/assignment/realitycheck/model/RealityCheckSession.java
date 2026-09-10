@@ -13,5 +13,6 @@ public class RealityCheckSession {
     private long lastPromptAt;
     private long elapsedSeconds;
     private long netAmountMinor;
-    private long nextCheckAt;
+    private long  version;
+
 }
