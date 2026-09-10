@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Optimistic-locking column. Without this, two concurrent writers (two API requests,
+        or a request racing the scheduled refresh job) can read the same row, both mutate it
+        in memory, and whichever writes last silently overwrites the other's change - a
+        problem that only gets worse once this service runs as multiple replicas hitting
+        the same database.
+    -->
+    <changeSet id="003-add-session-version" author="assignment">
+        <addColumn tableName="reality_check_session">
+            <column name="version" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
