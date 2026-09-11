@@ -17,7 +17,7 @@ public class OpenApiConfig {
                         .description("""
                                 Responsible-gaming reality-check sessions.
 
-                                While a player is in a gaming session, this service tracks how long they've
+                                While a player is in a gaming session, this service tracks how long they have
                                 been playing and their net win/loss, and periodically prompts them to check
                                 in on their own wellbeing. All timestamps in responses are formatted in the
                                 player's own timezone (the timezone stored on their player record)."""));
