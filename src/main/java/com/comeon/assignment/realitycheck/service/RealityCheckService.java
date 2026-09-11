@@ -16,14 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-/**
- * Deliberately holds no in-memory state. Earlier versions of this service cached the
- * active session per player in a local map, which works fine with one instance but breaks
- * once this runs as multiple Kubernetes replicas: each replica has its own cache, so one
- * replica can keep serving a stale status after another replica has stopped or updated the
- * same session. The database is the only thing all replicas actually share, so it's the
- * only thing we trust as the source of truth.
- */
 @Service
 @RequiredArgsConstructor
 public class RealityCheckService {
