@@ -134,23 +134,17 @@ public class RealityCheckService {
         }
     }
 
-    /**
-     * Applies a mutation and writes it, retrying with a fresh read if another writer won the
-     * optimistic-lock race in between. At this traffic volume a couple of retries is plenty;
-     * a genuinely hot row would call for a different approach (e.g. a queue), but that's well
-     * beyond what this service needs.
-     */
     private RealityCheckSession updateWithRetry(RealityCheckSession session, Consumer<RealityCheckSession> mutation) {
-        RealityCheckSession current = session;
-        for (int attempt = 0; attempt < MAX_UPDATE_ATTEMPTS; attempt++) {
-            mutation.accept(current);
-            if (sessionRepository.updateSession(current)) {
-                return current;
-            }
-            current = sessionRepository.findActiveByPlayer(current.getPlayerId())
-                    .orElseThrow(() -> new NoActiveSessionException(current.getPlayerId()));
+    RealityCheckSession current = session;
+    for (int attempt = 0; attempt < MAX_UPDATE_ATTEMPTS; attempt++) {
+        mutation.accept(current);
+        if (sessionRepository.updateSession(current)) {
+            return current;
         }
-        throw new IllegalStateException(
-                "Could not update session for player " + session.getPlayerId() + " after " + MAX_UPDATE_ATTEMPTS + " attempts");
+        current = sessionRepository.findActiveByPlayer(current.getPlayerId())
+                .orElseThrow(() -> new NoActiveSessionException(session.getPlayerId()));
     }
+    throw new IllegalStateException(
+            "Could not update session for player " + session.getPlayerId() + " after " + MAX_UPDATE_ATTEMPTS + " attempts");
+}
 }
